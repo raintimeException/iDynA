@@ -63,6 +63,7 @@ DynA *iput(DynA *d, int val)
         for (int i = 0; i < d->count; ++i) {
             d->items[i] = d_items[i];
         }
+        free(d_items);
     }
     d->items[d->count++] = val;
     return d;
