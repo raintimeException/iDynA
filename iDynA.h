@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TRACINGGG   dbg("%s", "<- O_o");
+// #define TRACINGGG   /*nothing*/
+
 
 #define init        iinit
 #define put         iput
@@ -15,6 +18,7 @@
     printf(fmt, ##args);\
     printf("\n");
 
+
 typedef struct {
     int *items; // TODO, int...
     int count;
@@ -22,8 +26,10 @@ typedef struct {
 } DynA;
 #define DEFAULT_CAPACITY    (2)
 
+
 DynA *iinit(int capacity)
 {
+TRACINGGG
     DynA *d = malloc(sizeof(DynA));
     if (!d) {
         dbg("%s", "ERROR: malloc failed");
@@ -46,6 +52,7 @@ DynA *iinit(int capacity)
 
 DynA *iput(DynA *d, int val)
 {
+TRACINGGG
     if (!d) {
         dbg("%s", "ERROR: could not insert");
         return NULL;
@@ -71,6 +78,7 @@ DynA *iput(DynA *d, int val)
 
 int iget_idx(DynA *d, int idx)
 {
+TRACINGGG
     if (!d      ||
         idx < 0 ||
         idx > d->count) {
@@ -82,6 +90,7 @@ int iget_idx(DynA *d, int idx)
 
 int idel_idx(DynA *d, int idx)
 {
+TRACINGGG
     if (!d      ||
         idx < 0 ||
         idx > d->count) {
@@ -99,6 +108,7 @@ int idel_idx(DynA *d, int idx)
 
 DynA *iprint_all(DynA *d)
 {
+TRACINGGG
     if (!d) {
         dbg("%s", "ERROR: could not print");
         return NULL;
@@ -113,6 +123,7 @@ DynA *iprint_all(DynA *d)
 
 int ideinit(DynA *d)
 {
+TRACINGGG
     if (!d) {
         dbg("%s", "ERROR: could not autokill");
         return 0;
