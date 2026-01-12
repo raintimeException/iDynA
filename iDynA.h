@@ -1,17 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+#define DEFAULT_CAPACITY    (10)
+
 #define TRACINGGG   dbg("%s", "<- O_o");
 // #define TRACINGGG   /*nothing*/
-
-
-#define init        iinit
-#define put         iput
-#define geti        iget_idx
-#define deli        idel_idx
-#define print_all   iprint_all
-#define deinit      ideinit
-
 
 #define dbg(fmt, args...) \
     printf("[%s: %d]: (%s) ", __FILE__, __LINE__, __FUNCTION__);\
