@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #define DEFAULT_CAPACITY    (10)
-
 #define TRACINGGG   dbg("%s", "<- O_o");
 // #define TRACINGGG   /*nothing*/
 
@@ -12,81 +10,77 @@
     printf(fmt, ##args);\
     printf("\n");
 
-
 #define init_with_type(type) {\
-    #type,\
     NULL,\
     0,\
     0,\
-    type##_init,\
-    type##_put,\
-    type##_get_idx, \
-    type##_del_idx, \
-    type##_print_all, \
-    type##_destroy,\
+    init,\
+    put,\
+    get_idx, \
+    del_idx, \
+    print_all, \
+    destroy,\
 }
 
-#ifdef DYNA_INT
+#ifndef TYPE
+#define TYPE int
+#endif
 
-struct DynA *int_init(int cap);
-struct DynA *int_put(int val);
-int         int_get_idx(struct DynA *d, int idx);
-int         int_del_idx(struct DynA *d, int idx);
-struct DynA *int_print_all(struct DynA *d);
-int         int_destroy(struct DynA *d);
+void init(int cap);
+void put (TYPE val);
+TYPE        get_idx(int idx);
+TYPE        del_idx(int idx);
+void        print_all(void);
+void        destroy(void);
 
 struct DynA {
-    const char *type_name;
-
-    int *items; // TODO
+    int *items;
     int count;
     int capacity;
 
-    struct DynA *(*init)(int cap);
-    struct DynA *(*put)(int val);
-    int         (*get_idx)(struct DynA *d, int idx);
-    int         (*del_idx)(struct DynA *d, int idx);
-    struct DynA *(*print_all)(struct DynA *d);
-    int         (*destroy)(struct DynA *d);
-} DynAs[] = {
-    init_with_type(int),
+    void (*init)(int cap);
+    void (*put) (TYPE val);
+    TYPE        (*get_idx)(int idx);
+    TYPE        (*del_idx)(int idx);
+    void        (*print_all)(void);
+    void        (*destroy)(void);
+} dynas[] = {
+    init_with_type(TYPE), //TODO
 };
 typedef struct DynA DynA;
+#define GIVE_ME_SOME_DYNA    &dynas[0];
 
-
-DynA *int_init(int capacity)
+void init(int capacity)
 {
-    DynA *d = &DynAs[0];
+    DynA *d = GIVE_ME_SOME_DYNA
 TRACINGGG
     if (capacity < DEFAULT_CAPACITY) {
         capacity = DEFAULT_CAPACITY;
     }
     d->capacity = DEFAULT_CAPACITY;
     d->count = 0;
-    d->items = malloc(d->capacity*sizeof(int));
+    d->items = malloc(d->capacity*sizeof(TYPE));
 
     if (!d->items) {
         dbg("%s", "ERROR: malloc failed");
         free(d);
         exit(1);
     }
-
-    return d;
 }
 
-DynA *int_put(int val)
+void put(TYPE val)
 {
-    DynA *d = &DynAs[0];
 TRACINGGG
+    DynA *d = GIVE_ME_SOME_DYNA
     if (!d) {
         dbg("%s", "ERROR: could not insert");
-        return NULL;
+        exit(1);
     }
 
     if (d->count >= d->capacity) {
         d->capacity *= 2;
         int *d_items = d->items;
-        d->items = malloc(d->capacity*sizeof(int));
+        d->items = malloc(d->capacity*sizeof(TYPE));
         if (!d->items) {
             dbg("%s", "ERROR: could not malloc");
             free(d_items);
@@ -99,12 +93,12 @@ TRACINGGG
         free(d_items);
     }
     d->items[d->count++] = val;
-    return d;
 }
 
-int int_get_idx(DynA *d, int idx)
+TYPE get_idx(int idx)
 {
 TRACINGGG
+    DynA *d = GIVE_ME_SOME_DYNA
     if (!d      ||
         idx < 0 ||
         idx > d->count) {
@@ -114,16 +108,17 @@ TRACINGGG
     return d->items[idx];
 }
 
-int int_del_idx(DynA *d, int idx)
+TYPE del_idx(int idx)
 {
 TRACINGGG
+    DynA *d = GIVE_ME_SOME_DYNA
     if (!d      ||
         idx < 0 ||
         idx > d->count) {
         dbg("%s", "ERROR: could not get the value from index");
         return -1;
     }
-    int item = d->items[idx];
+    TYPE item = d->items[idx];
     d->items[idx] = -1;
     for (int i = idx; i < d->count; ++i) {
         d->items[i] = d->items[i + 1];
@@ -132,31 +127,28 @@ TRACINGGG
     return item;
 }
 
-DynA *int_print_all(DynA *d)
+void print_all(void)
 {
 TRACINGGG
+    DynA *d = GIVE_ME_SOME_DYNA
     if (!d) {
         dbg("%s", "ERROR: could not print");
-        return NULL;
+        exit(1);
     }
     for (int i = 0; i < d->count; ++i) {
-        printf("%d ", d->items[i]);
+        printf("%d ", d->items[i]); // TODO: fixme
     }
     printf("\n");
-    return d;
 }
 
-int int_destroy(DynA *d)
+void destroy(void)
 {
 TRACINGGG
+    DynA *d = GIVE_ME_SOME_DYNA
     if (!d) {
         dbg("%s", "ERROR: could not autokill");
-        return 0;
+        exit(1);
     }
     free(d->items);
-    free(d);
     d = NULL;
-    return 1;
 }
-#endif // DYNA_INT
-
